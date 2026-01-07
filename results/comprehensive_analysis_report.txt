@@ -1,0 +1,94 @@
+
+================================================================================
+UYDU GÖRÜNTÜLERİ SINIFLANDIRMA - KAPSAMLI EĞİTİM RAPORU
+================================================================================
+
+Tarih: 2026-01-07 21:23:05
+
+VERİ SETİ BİLGİLERİ
+--------------------------------------------------------------------------------
+Toplam Görüntü: 27,000
+Sınıf Sayısı: 10
+Validation Set: 5,400 görüntü (20.0%)
+
+GENEL PERFORMANS METRİKLERİ
+--------------------------------------------------------------------------------
+Genel Doğruluk (Accuracy): 86.65%
+
+Macro Average:
+  - Precision: 0.8677
+  - Recall: 0.8594
+  - F1-Score: 0.8614
+
+Weighted Average:
+  - Precision: 0.8709
+  - Recall: 0.8665
+  - F1-Score: 0.8666
+
+SINIF BAZINDA DETAYLI PERFORMANS
+--------------------------------------------------------------------------------
+
+🌾 Yıllık Ekin (AnnualCrop):
+  Precision: 0.8605
+  Recall: 0.9050
+  F1-Score: 0.8822
+  Support: 600
+
+🌲 Orman (Forest):
+  Precision: 0.9350
+  Recall: 0.8633
+  F1-Score: 0.8977
+  Support: 600
+
+🌿 Otsu Bitki Örtüsü (HerbaceousVegetation):
+  Precision: 0.7420
+  Recall: 0.8867
+  F1-Score: 0.8079
+  Support: 600
+
+🛣️ Otoyol (Highway):
+  Precision: 0.8033
+  Recall: 0.7840
+  F1-Score: 0.7935
+  Support: 500
+
+🏭 Sanayi Bölgesi (Industrial):
+  Precision: 0.8827
+  Recall: 0.9480
+  F1-Score: 0.9142
+  Support: 500
+
+🐄 Mera (Pasture):
+  Precision: 0.8473
+  Recall: 0.7350
+  F1-Score: 0.7871
+  Support: 400
+
+🌳 Kalıcı Ekin (PermanentCrop):
+  Precision: 0.7749
+  Recall: 0.8400
+  F1-Score: 0.8061
+  Support: 500
+
+🏘️ Yerleşim Alanı (Residential):
+  Precision: 0.9707
+  Recall: 0.9383
+  F1-Score: 0.9542
+  Support: 600
+
+🌊 Nehir (River):
+  Precision: 0.8798
+  Recall: 0.7320
+  F1-Score: 0.7991
+  Support: 500
+
+💧 Deniz/Göl (SeaLake):
+  Precision: 0.9813
+  Recall: 0.9617
+  F1-Score: 0.9714
+  Support: 600
+
+================================================================================
+DOĞRU TAHMİNLER: 4,679 / 5,400 (86.65%)
+YANLIŞ TAHMİNLER: 721 / 5,400 (13.35%)
+================================================================================

@@ -53,14 +53,14 @@ desktop.ini
 outputs/
 models/*.keras
 models/*.h5
-results/
+# results/  # Uncommented to allow training graphics
 EuroSAT/
 EuroSATallBands/
 *.csv
 *.json
-*.png
-*.jpg
-*.jpeg
+# *.png  # Uncommented to allow training graphics
+# *.jpg  # Uncommented to allow training graphics
+# *.jpeg  # Uncommented to allow training graphics
 
 # Logs
 *.log
