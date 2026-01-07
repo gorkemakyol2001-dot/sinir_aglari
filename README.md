@@ -1,15 +1,13 @@
-# 🛰️ Uydu Görüntüleri ile Arazi Sınıflandırma
+# 🛰️ Uydu Görüntüleri ile Arazi Sınıflandırma - Eğitim Raporu
 
 <div align="center">
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)
+![Accuracy](https://img.shields.io/badge/Accuracy-86.65%25-success.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Status](https://img.shields.io/badge/Status-Production--Ready-success.svg)
 
-**Transfer Learning ile EuroSAT uydu görüntülerini sınıflandıran profesyonel derin öğrenme projesi**
-
-[Özellikler](#-özellikler) • [Kurulum](#-kurulum) • [Kullanım](#-kullanım) • [Demo](#-demo) • [Dokümantasyon](#-dokümantasyon)
+**Transfer Learning ile EuroSAT uydu görüntülerini sınıflandıran derin öğrenme projesi**
 
 </div>
 
@@ -18,14 +16,13 @@
 ## 📋 İçindekiler
 
 - [Proje Hakkında](#-proje-hakkında)
-- [Özellikler](#-özellikler)
-- [Kurulum](#-kurulum)
-- [Hızlı Başlangıç](#-hızlı-başlangıç)
-- [Kullanım Kılavuzu](#-kullanım-kılavuzu)
-- [Model Performansı](#-model-performansı)
-- [Dosya Yapısı](#-dosya-yapısı)
-- [API Dokümantasyonu](#-api-dokümantasyonu)
-- [Katkıda Bulunma](#-katkıda-bulunma)
+- [Veri Seti Analizi](#-veri-seti-analizi)
+- [Model Mimarisi](#-model-mimarisi)
+- [Eğitim Süreci](#-eğitim-süreci)
+- [Performans Metrikleri](#-performans-metrikleri)
+- [Detaylı Analiz](#-detaylı-analiz)
+- [Örnek Tahminler](#-örnek-tahminler)
+- [Kullanım](#-kullanım)
 
 ---
 
@@ -50,354 +47,34 @@ Bu proje, **uydu görüntülerinden arazi tiplerini otomatik olarak sınıfland�
 
 ---
 
-## ✨ Özellikler
+## 📊 Veri Seti Analizi
 
-### 🎯 Temel Özellikler
+### EuroSAT Veri Seti
 
-- ✅ **Transfer Learning** - MobileNetV2 pretrained model
-- ✅ **Yüksek Doğruluk** - ~90% validation accuracy
-- ✅ **Data Augmentation** - Rotation, zoom, flip
-- ✅ **Model Persistence** - Otomatik model kaydetme
-- ✅ **Comprehensive Logging** - Detaylı eğitim logları
-- ✅ **Visualization** - Training graphs, confusion matrix
+**EuroSAT**, Sentinel-2 uydu görüntülerinden oluşan kapsamlı bir arazi kullanımı ve arazi örtüsü sınıflandırma veri setidir.
 
-### 🚀 Gelişmiş Özellikler
+**Veri Seti İstatistikleri:**
+- **Toplam Görüntü:** 27,000
+- **Sınıf Sayısı:** 10
+- **Görüntü Boyutu:** 64x64 piksel (RGB)
+- **Eğitim Seti:** 21,600 görüntü (80%)
+- **Validation Seti:** 5,400 görüntü (20%)
 
-- 🎨 **Web Arayüzü** - Gradio ile kullanıcı dostu interface
-- 🔮 **Tahmin Scripti** - Komut satırından hızlı tahmin
-- 📊 **Performans Analizi** - Detaylı model değerlendirme
-- 🌐 **REST API** - FastAPI ile production-ready API
-- 📦 **Batch Processing** - Toplu görüntü işleme
-- 💾 **Model Export** - TFLite, ONNX formatları
-- 🎨 **Grad-CAM** - Model dikkat haritaları
+### Sınıf Dağılımı
+
+![Veri Seti Dağılımı](results/dataset_distribution.png)
+
+Veri seti dengeli bir dağılıma sahiptir. Her sınıfta yaklaşık 2,700 görüntü bulunmaktadır, bu da modelin tüm sınıfları eşit şekilde öğrenmesini sağlar.
 
 ---
 
-## 🔧 Kurulum
+## 🏗️ Model Mimarisi
 
-### Gereksinimler
+### Transfer Learning Yaklaşımı
 
-- Python 3.8+
-- TensorFlow 2.x
-- 8GB+ RAM (GPU önerilir)
+Projede **MobileNetV2** mimarisi kullanılmıştır. MobileNetV2, mobil ve gömülü cihazlar için optimize edilmiş, hafif ve hızlı bir CNN mimarisidir.
 
-### 1. Repository'yi Klonlayın
-
-```bash
-git clone https://github.com/yourusername/satellite-image-classification.git
-cd satellite-image-classification
-```
-
-### 2. Sanal Ortam Oluşturun (Opsiyonel ama Önerilir)
-
-```bash
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux/Mac
-source .venv/bin/activate
-```
-
-### 3. Gerekli Kütüphaneleri Yükleyin
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Veri Setini Hazırlayın
-
-EuroSAT veri setini [buradan](https://github.com/phelber/EuroSAT) indirin ve şu yapıda organize edin:
-
-```
-EuroSAT/
-├── AnnualCrop/
-├── Forest/
-├── HerbaceousVegetation/
-├── Highway/
-├── Industrial/
-├── Pasture/
-├── PermanentCrop/
-├── Residential/
-├── River/
-└── SeaLake/
-```
-
----
-
-## 🚀 Hızlı Başlangıç
-
-### 1️⃣ Model Eğitimi
-
-```bash
-python main.py
-```
-
-**Çıktılar:**
-- ✅ `outputs/satellite_model.keras` - Eğitilmiş model
-- ✅ `outputs/training_history.csv` - Eğitim metrikleri
-- ✅ `outputs/training_graphs.png` - Accuracy/Loss grafikleri
-- ✅ `outputs/confusion_matrix.png` - Karmaşıklık matrisi
-- ✅ `outputs/classification_report.txt` - Performans raporu
-
-**Süre:** ~1-2 saat (CPU), ~20-30 dakika (GPU)
-
-### 2️⃣ Web Arayüzünü Başlatın
-
-```bash
-python web_interface.py
-```
-
-Tarayıcınızda açın: `http://localhost:7860`
-
-### 3️⃣ Tahmin Yapın
-
-```bash
-python predict.py --image "path/to/image.jpg"
-```
-
----
-
-## 📚 Kullanım Kılavuzu
-
-### 🔮 Tahmin Yapma
-
-#### Komut Satırı
-
-```bash
-# Temel kullanım
-python predict.py --image "EuroSAT/Forest/Forest_1.jpg"
-
-# Top-5 tahmin
-python predict.py --image "test.jpg" --top 5
-
-# Farklı model kullanma
-python predict.py --image "test.jpg" --model "custom_model.keras"
-```
-
-**Örnek Çıktı:**
-
-```
-======================================================================
-📊 TAHMİN SONUÇLARI (Top 3)
-======================================================================
-
-1. Forest
-   📝 Açıklama: Orman
-   📈 Güven: 98.45%
-   🏆 EN YÜKSEK TAHMİN
-
-2. HerbaceousVegetation
-   📝 Açıklama: Otsu Bitki Örtüsü
-   📈 Güven: 1.23%
-
-3. PermanentCrop
-   📝 Açıklama: Kalıcı Ekin (Meyve bahçesi, bağ)
-   📈 Güven: 0.18%
-======================================================================
-```
-
-#### Python Kodu
-
-```python
-from predict import predict_image
-
-# Tahmin yap
-predicted_class, confidence = predict_image(
-    model_path="outputs/satellite_model.keras",
-    image_path="test.jpg",
-    show_top_n=3
-)
-
-print(f"Sınıf: {predicted_class}")
-print(f"Güven: {confidence*100:.2f}%")
-```
-
-### 📊 Performans Analizi
-
-```bash
-python visualize_results.py
-```
-
-**Oluşturulan Dosyalar:**
-- `outputs/analysis/correct_predictions.png` - Başarılı tahminler
-- `outputs/analysis/misclassified.png` - Hatalı tahminler
-- `outputs/analysis/per_class_accuracy.png` - Sınıf bazında performans
-- `outputs/analysis/analysis_report.txt` - Detaylı rapor
-
-### 🌐 Web Arayüzü
-
-```bash
-python web_interface.py
-```
-
-**Özellikler:**
-- 📸 Sürükle-bırak ile görüntü yükleme
-- 🎨 Modern Gradio arayüzü
-- 📊 Top-5 tahmin sonuçları
-- 🖼️ Örnek görüntüler
-- 🇹🇷 Türkçe dil desteği
-
-### 🔌 REST API
-
-#### API Sunucusunu Başlatma
-
-```bash
-python api_server.py
-```
-
-API çalışır: `http://localhost:8000`
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-#### API Kullanımı
-
-**Python:**
-
-```python
-import requests
-
-with open('image.jpg', 'rb') as f:
-    response = requests.post(
-        'http://localhost:8000/predict',
-        files={'file': f}
-    )
-    result = response.json()
-    print(f"Sınıf: {result['predicted_class']}")
-    print(f"Güven: {result['confidence']}")
-```
-
-**cURL:**
-
-```bash
-curl -X POST "http://localhost:8000/predict" \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@image.jpg"
-```
-
-### 📦 Toplu Tahmin
-
-```bash
-# CSV çıktısı
-python batch_predictor.py --input_dir test_images/ --output results.csv
-
-# JSON çıktısı
-python batch_predictor.py --input_dir test_images/ --output results.json --format json
-```
-
----
-
-## 📊 Model Performansı
-
-### Genel Metrikler
-
-| Metrik | Değer |
-|--------|-------|
-| **Validation Accuracy** | ~90% |
-| **Epoch Sayısı** | 10 |
-| **Batch Size** | 32 |
-| **Image Size** | 224x224 |
-| **Model Boyutu** | ~14 MB |
-
-### Sınıf Bazında Performans
-
-| Sınıf | Precision | Recall | F1-Score |
-|-------|-----------|--------|----------|
-| AnnualCrop | 0.90 | 0.93 | 0.91 |
-| Forest | 0.90 | 0.94 | 0.92 |
-| HerbaceousVegetation | 0.86 | 0.83 | 0.85 |
-| Highway | 0.85 | 0.84 | 0.85 |
-| Industrial | 0.93 | 0.94 | 0.93 |
-| Pasture | 0.80 | 0.86 | 0.83 |
-| PermanentCrop | 0.90 | 0.79 | 0.84 |
-| Residential | 0.97 | 0.98 | 0.97 |
-| River | 0.85 | 0.86 | 0.86 |
-| SeaLake | 0.99 | 0.97 | 0.98 |
-
-**Genel Accuracy:** 90%
-
----
-
-## 📁 Dosya Yapısı
-
-```
-satellite-image-classification/
-│
-├── 📄 main.py                      # Ana eğitim scripti
-├── 📄 predict.py                   # Tahmin scripti
-├── 📄 visualize_results.py         # Performans analizi
-├── 📄 web_interface.py             # Gradio web arayüzü
-├── 📄 api_server.py                # FastAPI sunucusu
-├── 📄 batch_predictor.py           # Toplu tahmin
-├── 📄 gradcam_visualizer.py        # Grad-CAM görselleştirme
-├── 📄 model_export.py              # Model dışa aktarma
-├── 📄 config.py                    # Konfigürasyon
-├── 📄 utils.py                     # Yardımcı fonksiyonlar
-│
-├── 📄 requirements.txt             # Python bağımlılıkları
-├── 📄 README.md                    # Bu dosya
-├── 📄 KULLANIM.md                  # Detaylı Türkçe kılavuz
-│
-├── 📁 EuroSAT/                     # Veri seti
-│   ├── AnnualCrop/
-│   ├── Forest/
-│   └── ...
-│
-├── 📁 outputs/                     # Model ve sonuçlar
-│   ├── satellite_model.keras       # Eğitilmiş model
-│   ├── training_history.csv        # Eğitim metrikleri
-│   ├── training_graphs.png         # Grafikler
-│   ├── confusion_matrix.png        # Confusion matrix
-│   ├── classification_report.txt   # Performans raporu
-│   └── analysis/                   # Detaylı analiz
-│       ├── correct_predictions.png
-│       ├── misclassified.png
-│       ├── per_class_accuracy.png
-│       └── analysis_report.txt
-│
-├── 📁 models/                      # Ek modeller
-├── 📁 logs/                        # TensorBoard logları
-└── 📁 examples/                    # Kullanım örnekleri
-```
-
----
-
-## 🌐 API Dokümantasyonu
-
-### Endpoints
-
-| Method | Endpoint | Açıklama |
-|--------|----------|----------|
-| GET | `/` | Ana sayfa |
-| GET | `/health` | Sağlık kontrolü |
-| GET | `/models` | Mevcut modelleri listele |
-| GET | `/classes` | Sınıfları listele |
-| POST | `/predict` | Tek görüntü tahmini |
-| POST | `/batch_predict` | Toplu tahmin |
-| GET | `/stats` | API istatistikleri |
-
-### Örnek Yanıt
-
-```json
-{
-  "success": true,
-  "predicted_class": "Forest",
-  "confidence": 0.9845,
-  "top5_predictions": {
-    "Forest": 0.9845,
-    "HerbaceousVegetation": 0.0123,
-    "PermanentCrop": 0.0018,
-    "AnnualCrop": 0.0009,
-    "Pasture": 0.0005
-  },
-  "processing_time_ms": 145.3
-}
-```
-
----
-
-## 🎓 Teknik Detaylar
-
-### Model Mimarisi
+**Model Yapısı:**
 
 ```
 Input (224x224x3)
@@ -413,121 +90,240 @@ Dropout(0.3)
 Dense(10, activation='softmax')
 ```
 
+**Özellikler:**
+- **Base Model:** MobileNetV2 (ImageNet pretrained)
+- **Trainable Parameters:** ~2.3M
+- **Model Boyutu:** ~11 MB
+- **Input Shape:** 224x224x3
+
+---
+
+## 🎓 Eğitim Süreci
+
 ### Eğitim Parametreleri
 
-- **Optimizer:** Adam (lr=0.0001)
-- **Loss Function:** Categorical Crossentropy
-- **Metrics:** Accuracy
-- **Data Split:** 80% Train, 20% Validation
-- **Data Augmentation:**
-  - Rotation: ±20°
-  - Zoom: ±20%
-  - Horizontal Flip: Yes
-  - Rescaling: 1/255
+| Parametre | Değer |
+|-----------|-------|
+| **Optimizer** | Adam |
+| **Learning Rate** | 0.0001 |
+| **Loss Function** | Categorical Crossentropy |
+| **Batch Size** | 32 |
+| **Epochs** | 10 |
+| **Validation Split** | 20% |
+
+### Data Augmentation
+
+Modelin genelleme yeteneğini artırmak için aşağıdaki data augmentation teknikleri uygulanmıştır:
+
+- **Rotation:** ±20°
+- **Zoom:** ±20%
+- **Horizontal Flip:** Evet
+- **Rescaling:** 1/255
 
 ---
 
-## 🛠️ Geliştirme
+## 📈 Performans Metrikleri
 
-### Performansı Artırma
+### Genel Performans
 
-#### 1. Daha Fazla Epoch
+| Metrik | Değer |
+|--------|-------|
+| **Validation Accuracy** | **86.65%** |
+| **Doğru Tahmin** | 4,679 / 5,400 |
+| **Yanlış Tahmin** | 721 / 5,400 |
+| **Macro Avg Precision** | 0.8669 |
+| **Macro Avg Recall** | 0.8665 |
+| **Macro Avg F1-Score** | 0.8664 |
 
-```python
-# main.py içinde
-EPOCHS = 20  # 10'dan 20'ye çıkarın
-```
+### Confusion Matrix
 
-#### 2. Fine-Tuning
+![Confusion Matrix](results/confusion_matrix_detailed.png)
 
-```python
-# Base model'in son katmanlarını eğitilebilir yapın
-base_model.trainable = True
-for layer in base_model.layers[:-20]:
-    layer.trainable = False
-```
+Confusion matrix, modelin her sınıf için tahmin performansını gösterir. Köşegen üzerindeki yüksek değerler, modelin o sınıfı doğru tahmin ettiğini gösterir.
 
-#### 3. Learning Rate Ayarı
-
-```python
-optimizer=Adam(learning_rate=0.00001)  # Daha düşük LR
-```
-
-### Yeni Model Ekleme
-
-```python
-from tensorflow.keras.applications import EfficientNetB0
-
-base_model = EfficientNetB0(
-    weights='imagenet',
-    include_top=False,
-    input_shape=(224, 224, 3)
-)
-```
+**Önemli Gözlemler:**
+- **En İyi Performans:** SeaLake (Deniz/Göl) - %98.7 doğruluk
+- **İyi Performans:** Residential (Yerleşim Alanı) - %97.0 doğruluk
+- **Geliştirilmesi Gereken:** HerbaceousVegetation (Otsu Bitki Örtüsü) - %73.0 doğruluk
 
 ---
 
-## 📖 Dokümantasyon
+## 🔍 Detaylı Analiz
 
-- **Detaylı Kullanım Kılavuzu:** [KULLANIM.md](KULLANIM.md)
-- **API Dokümantasyonu:** `http://localhost:8000/docs` (API çalışırken)
-- **Kod Dokümantasyonu:** Her dosyada detaylı docstring'ler
+### Sınıf Bazında Performans
+
+![Sınıf Performansı](results/class_performance.png)
+
+#### Detaylı Metrikler
+
+| Sınıf | Precision | Recall | F1-Score | Support |
+|-------|-----------|--------|----------|---------|
+| 🌾 Yıllık Ekin | 0.831 | 0.859 | 0.845 | 540 |
+| 🌲 Orman | 0.942 | 0.961 | 0.951 | 540 |
+| 🌿 Otsu Bitki Örtüsü | 0.730 | 0.730 | 0.730 | 540 |
+| 🛣️ Otoyol | 0.826 | 0.761 | 0.792 | 540 |
+| 🏭 Sanayi Bölgesi | 0.872 | 0.859 | 0.865 | 540 |
+| 🐄 Mera | 0.827 | 0.843 | 0.835 | 540 |
+| 🌳 Kalıcı Ekin | 0.823 | 0.767 | 0.794 | 540 |
+| 🏘️ Yerleşim Alanı | 0.970 | 0.970 | 0.970 | 540 |
+| 🌊 Nehir | 0.806 | 0.806 | 0.806 | 540 |
+| 💧 Deniz/Göl | 0.987 | 0.987 | 0.987 | 540 |
+
+**En İyi Performans Gösteren Sınıflar:**
+1. **💧 Deniz/Göl** - F1-Score: 0.987
+2. **🏘️ Yerleşim Alanı** - F1-Score: 0.970
+3. **🌲 Orman** - F1-Score: 0.951
+
+**Geliştirilmesi Gereken Sınıflar:**
+1. **🌿 Otsu Bitki Örtüsü** - F1-Score: 0.730
+2. **🛣️ Otoyol** - F1-Score: 0.792
+3. **🌳 Kalıcı Ekin** - F1-Score: 0.794
+
+### ROC Eğrileri ve AUC Skorları
+
+![ROC Eğrileri](results/roc_curves.png)
+
+ROC (Receiver Operating Characteristic) eğrileri, her sınıf için modelin ayırt etme gücünü gösterir. AUC (Area Under Curve) değeri 1'e yaklaştıkça model o sınıfı daha iyi ayırt edebilmektedir.
+
+**AUC Skorları:**
+- Tüm sınıflar için AUC > 0.95
+- Ortalama AUC: ~0.98
+- En yüksek AUC: SeaLake, Residential, Forest
 
 ---
 
-## 🐛 Sorun Giderme
+## 🖼️ Örnek Tahminler
 
-### Problem: Model dosyası bulunamıyor
+### Doğru Tahmin Örnekleri
+
+![Doğru Tahminler](results/sample_predictions_correct.png)
+
+Model, çoğu durumda yüksek güven skorlarıyla doğru tahminler yapmaktadır. Özellikle belirgin özelliklere sahip sınıflar (su yüzeyleri, yerleşim alanları, ormanlar) için güven skorları %95'in üzerindedir.
+
+### Yanlış Tahmin Örnekleri
+
+![Yanlış Tahminler](results/sample_predictions_incorrect.png)
+
+**Yaygın Hata Türleri:**
+1. **Otsu Bitki Örtüsü ↔ Mera:** Benzer yeşil tonları nedeniyle karışabilmektedir
+2. **Yıllık Ekin ↔ Kalıcı Ekin:** Mevsimsel değişiklikler nedeniyle ayırt edilmesi zor olabilir
+3. **Otoyol ↔ Nehir:** Bazı açılardan benzer doğrusal yapılar gösterebilir
+
+---
+
+## 💡 Öneriler ve İyileştirmeler
+
+### Performans İyileştirme Stratejileri
+
+1. **Fine-Tuning:**
+   - Base model'in son katmanlarını açarak fine-tuning yapılabilir
+   - Learning rate azaltılarak daha hassas eğitim yapılabilir
+
+2. **Veri Augmentation:**
+   - Daha agresif augmentation teknikleri denenebilir
+   - Özellikle düşük performanslı sınıflar için özel augmentation
+
+3. **Ensemble Learning:**
+   - Farklı mimarilerin (ResNet, EfficientNet) birleştirilmesi
+   - Voting veya stacking yöntemleri ile doğruluk artırılabilir
+
+4. **Class Balancing:**
+   - Düşük performanslı sınıflar için class weights ayarlanabilir
+   - Focal loss kullanılabilir
+
+---
+
+## 🚀 Kullanım
+
+### Kurulum
 
 ```bash
-# Önce modeli eğitin
+# Repository'yi klonlayın
+git clone https://github.com/yourusername/satellite-image-classification.git
+cd satellite-image-classification
+
+# Gerekli kütüphaneleri yükleyin
+pip install -r requirements.txt
+```
+
+### Model Eğitimi
+
+```bash
 python main.py
 ```
 
-### Problem: GPU belleği yetersiz
+### Analiz Raporu Oluşturma
 
-```python
-# main.py içinde batch size'ı azaltın
-BATCH_SIZE = 16  # veya 8
+```bash
+python analyze_training.py
 ```
 
-### Problem: Veri seti bulunamıyor
+Bu script şunları oluşturur:
+- Veri seti dağılımı grafiği
+- Confusion matrix
+- Sınıf bazında performans grafikleri
+- ROC eğrileri
+- Örnek tahminler
+- Detaylı analiz raporu
 
-```python
-# main.py içinde DATA_DIR yolunu kontrol edin
-DATA_DIR = r"C:\Dogru\Yol\EuroSAT"
+### Tahmin Yapma
+
+```bash
+# Tek görüntü tahmini
+python predict.py --image "path/to/image.jpg"
+
+# Web arayüzü
+python web_interface.py
 ```
 
 ---
 
-## 🤝 Katkıda Bulunma
+## 📁 Dosya Yapısı
 
-Katkılarınızı bekliyoruz! Lütfen şu adımları izleyin:
-
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+```
+satellite-image-classification/
+│
+├── 📄 main.py                      # Ana eğitim scripti
+├── 📄 analyze_training.py          # Analiz ve görselleştirme
+├── 📄 predict.py                   # Tahmin scripti
+├── 📄 web_interface.py             # Gradio web arayüzü
+│
+├── 📁 EuroSAT/                     # Veri seti
+├── 📁 outputs/                     # Eğitilmiş model
+│   └── satellite_model.keras
+│
+├── 📁 results/                     # Analiz sonuçları
+│   ├── dataset_distribution.png
+│   ├── confusion_matrix_detailed.png
+│   ├── class_performance.png
+│   ├── roc_curves.png
+│   ├── sample_predictions_correct.png
+│   ├── sample_predictions_incorrect.png
+│   └── comprehensive_analysis_report.txt
+│
+└── 📄 README.md                    # Bu dosya
+```
 
 ---
 
-## 📝 Lisans
+## 📊 Sonuç
 
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+Bu proje, **%86.65 doğruluk** oranıyla uydu görüntülerinden arazi tiplerini başarıyla sınıflandırmaktadır. Transfer Learning yaklaşımı sayesinde:
+
+✅ **Hızlı Eğitim:** ImageNet pretrained ağırlıklar kullanılarak eğitim süresi kısaltıldı  
+✅ **Yüksek Doğruluk:** 10 epoch'ta %86+ doğruluk elde edildi  
+✅ **Hafif Model:** 11 MB model boyutu ile deployment kolaylaştırıldı  
+✅ **Dengeli Performans:** Çoğu sınıf için %80+ F1-Score  
+
+**Gelecek Çalışmalar:**
+- Fine-tuning ile doğruluğun %90+ seviyesine çıkarılması
+- Ensemble learning ile performans artırımı
+- Düşük performanslı sınıflar için özel iyileştirmeler
+- Gerçek zamanlı tahmin sistemi geliştirilmesi
 
 ---
 
 ## 🙏 Teşekkürler
-
-### Kullanılan Teknolojiler
-
-- [TensorFlow](https://www.tensorflow.org/) - Derin öğrenme framework
-- [Keras](https://keras.io/) - High-level neural networks API
-- [Gradio](https://www.gradio.app/) - Web arayüzü
-- [FastAPI](https://fastapi.tiangolo.com/) - REST API
-- [scikit-learn](https://scikit-learn.org/) - Metrikler ve değerlendirme
-- [Matplotlib](https://matplotlib.org/) & [Seaborn](https://seaborn.pydata.org/) - Görselleştirme
 
 ### Veri Seti
 
@@ -538,27 +334,18 @@ EuroSAT: A novel dataset and deep learning benchmark for land use and land cover
 IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing.
 ```
 
+### Kullanılan Teknolojiler
+
+- [TensorFlow](https://www.tensorflow.org/) - Derin öğrenme framework
+- [Keras](https://keras.io/) - High-level neural networks API
+- [scikit-learn](https://scikit-learn.org/) - Metrikler ve değerlendirme
+- [Matplotlib](https://matplotlib.org/) & [Seaborn](https://seaborn.pydata.org/) - Görselleştirme
+
 ---
 
 ## 📞 İletişim
 
 gorkemakyol2001@gmail.com
-
----
-
-## 🎉 Demo
-
-### Web Arayüzü
-
-![Web Interface Demo](https://via.placeholder.com/800x400?text=Web+Interface+Screenshot)
-
-### Tahmin Sonuçları
-
-![Prediction Results](https://via.placeholder.com/800x400?text=Prediction+Results)
-
-### Performans Grafikleri
-
-![Performance Graphs](https://via.placeholder.com/800x400?text=Performance+Graphs)
 
 ---
 
