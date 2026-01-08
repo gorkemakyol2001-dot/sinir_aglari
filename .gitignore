@@ -54,24 +54,13 @@ outputs/
 models/*.keras
 models/*.h5
 # results/  # Uncommented to allow training graphics
-EuroSAT/
-EuroSATallBands/
-*.csv
-*.json
 # *.png  # Uncommented to allow training graphics
 # *.jpg  # Uncommented to allow training graphics
 # *.jpeg  # Uncommented to allow training graphics
 
 # Logs
-*.log
-training_log.txt
+
 
 # Temporary files
-*.tmp
-*.bak
-*.cache
 
 # Keep structure files
-!.gitkeep
-!examples/*.py
-!requirements.txt
